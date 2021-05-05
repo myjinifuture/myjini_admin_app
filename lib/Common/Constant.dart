@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-//
-const String API_URL = "http://mywatcher.itfuturz.com/api/AppAPI/";
+// const String API_URL = "http://mywatcher.itfuturz.com/api/AppAPI/";
+const String API_URL = "https://myjini.herokuapp.com/";
 const String Image_Url = "http://mywatcher.itfuturz.com/";
+const String Access_Token='Mjdjhcbj43jkmsijkmjJKJKJoijlkmlkjo-HfdkvjDJjMoikjnNJn-JNFhukmk';
 // const String Image_Url1 = "http://mywatcher.itfuturz.com";
 // const Inr_Rupee = "₹";
 //

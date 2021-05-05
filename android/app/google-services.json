@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "145134399120",
+    "project_id": "myjiniadmin",
+    "storage_bucket": "myjiniadmin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:145134399120:android:3323d1466371788ebd3215",
+        "android_client_info": {
+          "package_name": "com.example.my_jini_adminapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "145134399120-j212teah6hulinsuegqfjqcjclbudvil.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZEdzZIArh56rhV3fDWPHMsqqCTMQyLhE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "145134399120-j212teah6hulinsuegqfjqcjclbudvil.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

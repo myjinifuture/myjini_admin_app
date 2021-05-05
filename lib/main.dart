@@ -1,7 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:my_jini_adminapp/Common/Constant.dart';
 import 'package:my_jini_adminapp/Common/Constant.dart';
 import 'package:my_jini_adminapp/Common/Constant.dart';
+import 'package:my_jini_adminapp/Screen/ApproveSociety.dart';
 import 'package:my_jini_adminapp/Screen/CreateSociety.dart';
 import 'package:my_jini_adminapp/Screen/Dashboard.dart';
 import 'package:my_jini_adminapp/Screen/DirectoryScreen.dart';
@@ -14,6 +16,8 @@ import 'package:my_jini_adminapp/Screen/Splashscreen.dart';
 import 'Screen/SetupWings.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -31,7 +35,7 @@ class _MyAppState extends State<MyApp> {
       initialRoute: '/',
       //navigatorKey: Get.key,
       routes: {
-        //'/': (context) => AddressScreen(),
+        // '/': (context) => ApproveSociety(),
         '/': (context) => Splashscreen(),
         '/LoginScreen': (context) => LoginScreen(),
         '/Dashboard': (context) => Dashboard(),

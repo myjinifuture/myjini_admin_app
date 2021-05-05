@@ -1,19 +1,19 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_jini_adminapp/Common/Constant.dart';
 import 'package:my_jini_adminapp/Common/Services.dart';
-import 'package:my_jini_adminapp/Component/DashboardComponent.dart';
+import 'package:my_jini_adminapp/Component/ApproveComponent.dart';
 
-class Dashboard extends StatefulWidget {
+class ApproveSociety extends StatefulWidget {
   @override
-  _DashboardState createState() => _DashboardState();
+  _ApproveSocietyState createState() => _ApproveSocietyState();
 }
 
-class _DashboardState extends State<Dashboard> {
-  TextEditingController _txtsearch = new TextEditingController();
+class _ApproveSocietyState extends State<ApproveSociety> {
+  TextEditingController _search=new TextEditingController();
+
   bool isLoading = false;
   int Count=0;
   List societyList=[];
@@ -83,31 +83,21 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: Drawer(),
-        body: Stack(children: [
-          // Background with gradient
-          Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.deepPurple[900],
-                      appPrimaryMaterialColor[900],
-                      appPrimaryMaterialColor[700],
-                    ]),
-              ),
-              height: MediaQuery.of(context).size.height * 0.18),
+      appBar: AppBar(
+        title: Text('Approve Society'),
+      ),
+      body: Column(
+        children: [
           Card(
             margin: EdgeInsets.only(
-                left: 15.0, right: 15.0, top: 110.0, bottom: 15),
+                left: 15.0, right: 15.0, top: 15.0, bottom: 15),
             elevation: 1,
             child: Container(
               height: 50,
               width: MediaQuery.of(context).size.width,
               child: TextFormField(
                 textInputAction: TextInputAction.done,
-                controller: _txtsearch,
+                controller: _search,
                 keyboardType: TextInputType.text,
                 cursorColor: appPrimaryMaterialColor,
                 decoration: InputDecoration(
@@ -125,20 +115,20 @@ class _DashboardState extends State<Dashboard> {
                       // borderSide: new BorderSide(),
                       borderSide: BorderSide.none,
                     ),
-                    hintText: "Search your members",
+                    hintText: "Search Society",
                     hintStyle: TextStyle(fontSize: 13)),
               ),
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(
-                left: 10.0, right: 10.0, top: 170.0, bottom: 15),
-            child: AnimationLimiter(
+          SingleChildScrollView(
+            child: Container(
+              height: MediaQuery.of(context).size.height - 160,
+              width: MediaQuery.of(context).size.width,
               child: ListView.builder(
                 itemCount: societyList.length,
                 shrinkWrap: false,
                 itemBuilder: (context, index) {
-                  return DashboardComponent(
+                  return ApproveComponent(
                     index: index,
                     societyData: societyList[index],
                   );
@@ -146,25 +136,8 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
           ),
-          //Above card
-          // Card(
-          //     elevation: 20.0,
-          //     margin: EdgeInsets.only(left: 15.0, right: 15.0, top: 100.0),
-          //     child: ListView(
-          //         padding: EdgeInsets.only(
-          //             top: 20.0, left: 20.0, right: 18.0, bottom: 5.0),
-          //         children: <Widget>[TextField(), TextField()])),
-          Positioned(
-            top: 0.0,
-            left: 0.0,
-            right: 0.0,
-            child: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0.0,
-              centerTitle: true,
-              title: Text("Dashboard"),
-            ),
-          ),
-        ]));
+        ],
+      ),
+    );
   }
 }

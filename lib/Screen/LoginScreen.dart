@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_jini_adminapp/Common/Constant.dart';
 import 'package:my_jini_adminapp/Screen/Dashboard.dart';
+import 'package:my_jini_adminapp/Screen/OTPScreen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -51,16 +53,15 @@ class _LoginScreenState extends State<LoginScreen> {
                           padding: const EdgeInsets.only(left: 8.0),
                           child: Text(
                             "MY JINI",
-                            style: TextStyle(
-                                color: Colors.white, fontSize: 20),
+                            style: TextStyle(color: Colors.white, fontSize: 20),
                           ),
                         )
                       ],
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(
-                        left: 20.0, top: 40, bottom: 8),
+                    padding:
+                        const EdgeInsets.only(left: 20.0, top: 40, bottom: 8),
                     child: Text(
                       "Hello There.",
                       style: TextStyle(
@@ -86,8 +87,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 40,
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(
-                        top: 10.0, left: 20, right: 20),
+                    padding:
+                        const EdgeInsets.only(top: 10.0, left: 20, right: 20),
                     child: Container(
                       height: MediaQuery.of(context).size.height / 2.5,
                       width: MediaQuery.of(context).size.width,
@@ -99,17 +100,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              // Text(
-                              //   "Welcome to,\nMy Jini",
-                              //   style: TextStyle(
-                              //       fontWeight: FontWeight.w500,
-                              //       fontSize: 18,
-                              //       color: appPrimaryMaterialColor),
-                              // ),
-                              // Center(
-                              //   child: Image.asset('assets/applogo.png',
-                              //       width: 90, height: 90),
-                              // ),
                               Align(
                                 alignment: Alignment.center,
                                 child: Image.asset(
@@ -130,6 +120,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                 child: Padding(
                                   padding: const EdgeInsets.only(left: 8.0),
                                   child: TextFormField(
+                                    validator: (value){
+                                      if(value.toString().length==10){
+                                        return null;
+                                      }
+                                      else
+                                        {
+                                          Fluttertoast.showToast(msg: 'Invalid Mobile Number');
+                                        }
+                                    },
                                     textInputAction: TextInputAction.done,
                                     controller: _MobileNumber,
                                     maxLength: 10,
@@ -144,8 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             ),
                                         border: new OutlineInputBorder(
                                           borderRadius:
-                                              new BorderRadius.circular(
-                                                  5.0),
+                                              new BorderRadius.circular(5.0),
                                           borderSide: BorderSide.none,
                                         ),
                                         hintText: "Your Mobile Number",
@@ -171,8 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   height: 45,
                                   child: FlatButton(
                                     shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(5)),
+                                        borderRadius: BorderRadius.circular(5)),
                                     //color: appPrimaryMaterialColor[500],
 
                                     // textColor: Colors.white,
@@ -183,8 +180,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                             color: Colors.white,
                                             fontWeight: FontWeight.w600)),
                                     onPressed: () {
-                                      Navigator.pushNamed(
-                                          context, '/Dashboard');
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => OTPScreen(
+                                          mobileNo: _MobileNumber.text,
+                                        )),);
                                     },
                                   ),
                                 ),
@@ -202,8 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: <Widget>[
                         Text(
                           "Don't Have an Account?",
-                          style:
-                              TextStyle(color: Colors.white, fontSize: 12),
+                          style: TextStyle(color: Colors.white, fontSize: 12),
                         ),
                         GestureDetector(
                             onTap: () {

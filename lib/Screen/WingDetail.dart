@@ -43,7 +43,8 @@ class _WingDetailState extends State<WingDetail> {
         title: Text("Wing - " + widget.wingName),
         centerTitle: true,
       ),
-      resizeToAvoidBottomPadding: false,
+      // resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
