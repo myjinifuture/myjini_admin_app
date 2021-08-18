@@ -10,12 +10,23 @@ import 'package:my_jini_adminapp/Common/Constant.dart' as cnst;
 import 'package:my_jini_adminapp/Common/ExtensionMethods.dart';
 import 'package:my_jini_adminapp/Common/Services.dart';
 import 'package:my_jini_adminapp/Screen/MemberProfile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MemberComponent extends StatefulWidget {
-  // var MemberData;
+  var MemberData, search, wingName;
+  Function onAdminUpdate;
+
+  int index;
+
+  String SocietyId;
   //
-  // MemberComponent(this.MemberData);
+   MemberComponent({this.SocietyId,
+     this.MemberData,
+     this.index,
+     this.onAdminUpdate,
+     this.search,
+     this.wingName,});
 
   @override
   _MemberComponentState createState() => _MemberComponentState();
@@ -78,6 +89,83 @@ class _MemberComponentState extends State<MemberComponent> {
   //     showHHMsg("No Internet Connection.", "");
   //   }
   // }
+  removeAccount() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var memberID = prefs.getString(Session.Member_Id);
+    var societyID = prefs.getString(Session.SocietyId);
+    final result = await InternetAddress.lookup('google.com');
+    if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+      var data ={
+        "societyId":widget.SocietyId,
+        "memberId":widget.MemberData["_id"],
+        "isVerify": false
+      };
+      print(data);
+      Services.responseHandler(apiName: "admin/memberApproval", body: data)
+          .then((data) async {
+        if (data.Data != null && data.Data.toString() == "0") {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.clear();
+          Navigator.pushNamed(context,'/Dashboard');
+        } else {
+          // setState(() {});
+        }
+      },onError: (e) {
+        showMsg("Something Went Wrong Please Try Again");
+        setState(() {});
+      });
+    }
+  }
+
+  void _showConfirmDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("Admin"),
+          content: new Text("Are You Sure You Want To delete this Member...?"),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("No"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                ;
+              },
+            ),
+            new FlatButton(
+              child: new Text("Yes"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                removeAccount();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+  showMsg(String msg, {String title = 'MYJINI'}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(msg),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   showHHMsg(String title, String msg) {
     showDialog(
@@ -146,11 +234,11 @@ class _MemberComponentState extends State<MemberComponent> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           //  Text("${widget.MemberData["MemberData"]["Name"]}",
-                          Text("Rinki Sharma",
+                          Text("${widget.MemberData["Name"]}".toUpperCase(),
                               style: TextStyle(
                                   fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.grey[700])),
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.purple)),
                           // widget.MemberData["MemberData"]["IsPrivate"] ==
                           //             false ||
                           //         widget.MemberData["MemberData"]
@@ -159,24 +247,28 @@ class _MemberComponentState extends State<MemberComponent> {
                           //     ?
                           // Text(
                           //         '${widget.MemberData["MemberData"]["ContactNo"]}')
-                          Text('999999999999'),
+                          Text("${widget.MemberData["ContactNo"]}",style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.blueGrey
+                          ),),
                           // : Text(
                           //     '${widget.MemberData["MemberData"]["ContactNo"]}'
                           //         .replaceRange(0, 6, "******")),
                           Text(
                             // "Flat No: ${widget.MemberData["MemberData"]["FlatNo"]}",
-                            "Flat No: 12",
+                            "Flat No: ${widget.MemberData["FlatData"]["flatNo"]}"
+                              .toUpperCase(),
                             style: TextStyle(
-                                color: Colors.grey[600], fontSize: 13),
+                                color: Colors.grey[600], fontSize: 12),
                           ),
-                          Text(
+                          /*Text(
                             //"${widget.MemberData["MemberData"]["ResidenceType"]}"
-                            "rented".checkForNull(),
+                             "${widget.MemberData["MemberData"]["ResidenceType"]}",
                             style: TextStyle(
                                 color: appPrimaryMaterialColor,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600),
-                          )
+                          )*/
                         ],
                       ),
                     ),
@@ -228,6 +320,11 @@ class _MemberComponentState extends State<MemberComponent> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => MemberProfile(
+                                memberData: widget.MemberData,
+                                isContactNumberPrivate: widget
+                                    .MemberData["Private"]
+                                ["ContactNo"]
+                                    .toString(),
                                 // widget.MemberData["MemberData"],
                                 ),
                           ),
@@ -245,7 +342,12 @@ class _MemberComponentState extends State<MemberComponent> {
                         //         backgroundColor: Colors.red,
                         //         textColor: Colors.white)
                         //     : GetVcard();
-                      })
+                      }),
+                  IconButton(
+                      icon: Icon(Icons.delete_outline, color: Colors.red),
+                      onPressed: () {
+                        _showConfirmDialog();
+                      }),
                 ],
               ),
             )

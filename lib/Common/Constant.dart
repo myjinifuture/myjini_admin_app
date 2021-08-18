@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 // const String API_URL = "http://mywatcher.itfuturz.com/api/AppAPI/";
-const String API_URL = "https://myjini.herokuapp.com/";
+const String API_URL = "https://myjini2.herokuapp.com/";
 const String Image_Url = "http://mywatcher.itfuturz.com/";
-const String Access_Token='Mjdjhcbj43jkmsijkmjJKJKJoijlkmlkjo-HfdkvjDJjMoikjnNJn-JNFhukmk';
+const String Access_Token = 'Mjdjhcbj43jkmsijkmjJKJKJoijlkmlkjo-HfdkvjDJjMoikjnNJn-JNFhukmk';
 // const String Image_Url1 = "http://mywatcher.itfuturz.com";
 // const Inr_Rupee = "₹";
 //
@@ -43,6 +43,10 @@ class Session {
   static const String digital_Id = "digital_Id";
   static const String IsVerified = "is_verified";
   static const String forFirstTime = "forFirstTime";
+
+
+  static const String FunctionalityId = "fuctionality_Id";
+  static const String FunctionalityIds = "fuctionality_Ids";
 }
 
 Map<int, Color> appprimarycolors = {

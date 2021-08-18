@@ -1,13 +1,17 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:my_jini_adminapp/Common/Constant.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:my_jini_adminapp/Common/Constant.dart'as cnst;
 import 'package:my_jini_adminapp/Common/Services.dart';
 import 'package:my_jini_adminapp/Component/MemberComponent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my_jini_adminapp/Common/ExtensionMethods.dart';
 
 class DirectoryScreen extends StatefulWidget {
+
+  String SocietyId;
+  DirectoryScreen({this.SocietyId});
   @override
   _DirectoryScreenState createState() => _DirectoryScreenState();
 }
@@ -25,7 +29,7 @@ class _DirectoryScreenState extends State<DirectoryScreen> {
   );
 
   List searchMemberData = new List();
-  List WingData = new List();
+  List WingData = List();
   bool _isSearching = false,
       isfirst = false,
       isFilter = false,
@@ -38,13 +42,15 @@ class _DirectoryScreenState extends State<DirectoryScreen> {
 
   @override
   void initState() {
+    getLocaldata();
     //GetWingList();
     //_getLocaldata();
+    //_getDirectoryListing();
   }
 
-  _getLocaldata() async {
+  /*_getLocaldata() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    SocietyId = prefs.getString(Session.SocietyId);
+    SocietyId = prefs.getString(cnst.Session.SocietyId);
   }
 
   GetWingList() async {
@@ -79,9 +85,140 @@ class _DirectoryScreenState extends State<DirectoryScreen> {
     } on SocketException catch (_) {
       showHHMsg("No Internet Connection.", "");
     }
+  }*/
+
+  List memberData = [];
+  bool dataFound = false;
+
+  getLocaldata() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      SocietyId = prefs.getString(cnst.Session.SocietyId);
+    });
+    _getWing(widget.SocietyId);
   }
 
-  GetMemberData(selectedWing) async {
+  List _wingList = [];
+
+  _getWing(String societyId) async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        var data = {"societyId": widget.SocietyId};
+        setState(() {
+          isLoading = true;
+        });
+        print("print data Society");
+        print(data);
+        Services.responseHandler(
+            apiName: "admin/getAllWingOfSociety", body: data)
+            .then((data) async {
+          if (data.Data != null && data.Data.length > 0) {
+            setState(() {
+              print("print wingOFSociety...........................");
+              print(data.Data);
+              for (int i = 0; i < data.Data.length; i++) {
+                if (data.Data[i]["totalFloor"].toString() != "0") {
+                  _wingList.add(data.Data[i]);
+                  print("print ++++++++++_wingList");
+                  print(_wingList);
+                }
+              }
+              ;
+              // _wingList = data.Data;
+              isLoading = false;
+              selectedWing = data.Data[0]["_id"].toString();
+            });
+            _getDirectoryListing(selectedWing);
+            // _getotherListing(SocietyId,_fromDate.toString(),_toDate.toString());
+            // S.Services.getStaffData(DateTime.now().toString(), DateTime.now().toString(),
+            //     data[0]["Id"].toString());
+          } else {
+            setState(() {
+              isLoading = false;
+            });
+          }
+        }, onError: (e) {
+          showMsg("Something Went Wrong Please Try Again");
+          setState(() {
+            isLoading = false;
+          });
+        });
+      }
+    } on SocketException catch (_) {
+      showMsg("No Internet Connection.");
+    }
+  }
+
+  showMsg(String msg, {String title = 'MYJINI'}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(msg),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Okay"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                ;
+              },
+            ),
+          ],
+        );
+      },
+
+    );
+  }
+
+  _getDirectoryListing(String seletecedWing) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var societyId = prefs.getString(cnst.Session.SocietyId);
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        var data = {
+          "societyId": widget.SocietyId
+        };
+        //setState(() {
+        //   isLoading = true;
+        // });
+        Services.responseHandler(apiName: "admin/directoryListing", body: data)
+            .then((data) async {
+          memberData.clear();
+          if (data.Data != null && data.Data.length > 0) {
+            setState(() {
+              dataFound = true;
+              // memberData = data.Data;
+              for (int i = 0; i < data.Data.length; i++) {
+                if (data.Data[i]["society"]["wingId"] == selectedWing) {
+                  memberData.add(data.Data[i]);
+                }
+              }
+              // isLoading = false;
+            });
+            print("memberData");
+            print(memberData);
+          } else {
+            // setState(() {
+            //   isLoading = false;
+            // });
+          }
+        }, onError: (e) {
+          showHHMsg("Something Went Wrong Please Try Again", "");
+          setState(() {
+            isLoading = false;
+          });
+        });
+      }
+    } on SocketException catch (_) {
+      showHHMsg("No Internet Connection.", "");
+    }
+  }
+
+  /*GetMemberData(selectedWing) async {
     try {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
@@ -111,7 +248,7 @@ class _DirectoryScreenState extends State<DirectoryScreen> {
     } on SocketException catch (_) {
       showHHMsg("No Internet Connection.", "");
     }
-  }
+  }*/
 
   showHHMsg(String title, String msg) {
     showDialog(
@@ -137,79 +274,22 @@ class _DirectoryScreenState extends State<DirectoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(context),
-      body: isLoading
-          ? Container(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            )
-          : Column(
+      body:memberData.length > 0
+          ?  Column(
               children: <Widget>[
                 Container(
-                  color: appPrimaryMaterialColor,
+                  color: cnst.appPrimaryMaterialColor,
                   width: MediaQuery.of(context).size.width,
                   height: 40,
                   padding: EdgeInsets.only(left: 12),
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Members : ${MemberData.length}",
+                    "Members : ${memberData.length}",
                     style: TextStyle(
                         color: Colors.white, fontWeight: FontWeight.w600),
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    for (int i = 0; i < WingData.length; i++) ...[
-                      GestureDetector(
-                        onTap: () {
-                          if (selectedWing != WingData[i]["Id"].toString()) {
-                            setState(() {
-                              selectedWing = WingData[i]["Id"].toString();
-                            });
-                            setState(() {
-                              MemberData = [];
-                              FilterMemberData = [];
-                              searchMemberData = [];
-                              isFilter = false;
-                              _isSearching = false;
-                            });
-                            GetMemberData(WingData[i]["Id"].toString());
-                          }
-                        },
-                        child: Container(
-                          width: selectedWing == WingData[i]["Id"].toString()
-                              ? 60
-                              : 45,
-                          height: selectedWing == WingData[i]["Id"].toString()
-                              ? 60
-                              : 45,
-                          margin: EdgeInsets.only(top: 10, left: 5, right: 5),
-                          decoration: BoxDecoration(
-                              color:
-                                  selectedWing == WingData[i]["Id"].toString()
-                                      ? appPrimaryMaterialColor
-                                      : Colors.white,
-                              border:
-                                  Border.all(color: appPrimaryMaterialColor),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(4))),
-                          alignment: Alignment.center,
-                          child: Text(
-                            "${WingData[i]["WingName"]}",
-                            style: TextStyle(
-                                color:
-                                    selectedWing == WingData[i]["Id"].toString()
-                                        ? Colors.white
-                                        : appPrimaryMaterialColor,
-                                fontSize: 19),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-                FlatButton(
+                /*FlatButton(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     mainAxisSize: MainAxisSize.min,
@@ -218,7 +298,7 @@ class _DirectoryScreenState extends State<DirectoryScreen> {
                         "Filter",
                         style: TextStyle(
                             fontSize: 16,
-                            color: appPrimaryMaterialColor,
+                            color: cnst.appPrimaryMaterialColor,
                             fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
@@ -227,7 +307,7 @@ class _DirectoryScreenState extends State<DirectoryScreen> {
                       Icon(
                         Icons.filter_list,
                         size: 19,
-                        color: appPrimaryMaterialColor,
+                        color: cnst.appPrimaryMaterialColor,
                       ),
                     ],
                   ),
@@ -246,15 +326,15 @@ class _DirectoryScreenState extends State<DirectoryScreen> {
                               });
                               for (int i = 0; i < MemberData.length; i++) {
                                 if (MemberData[i]["MemberData"]["Gender"] ==
-                                        gender ||
+                                    gender ||
                                     MemberData[i]["MemberData"]
-                                            ["ResidenceType"] ==
+                                    ["ResidenceType"] ==
                                         owned ||
                                     MemberData[i]["MemberData"]
-                                            ["ResidenceType"] ==
+                                    ["ResidenceType"] ==
                                         owner ||
                                     MemberData[i]["MemberData"]
-                                            ["ResidenceType"] ==
+                                    ["ResidenceType"] ==
                                         rented) {
                                   FilterMemberData.add(MemberData[i]);
                                 }
@@ -264,9 +344,122 @@ class _DirectoryScreenState extends State<DirectoryScreen> {
                           );
                         });
                   },
-                ).alignAtEnd(),
+                ).alignAtEnd(),*/
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    for (int i = 0; i < _wingList.length; i++) ...[
+                      GestureDetector(
+                        onTap: () {
+                          if (selectedWing !=
+                              _wingList[i]["_id"].toString()) {
+                            setState(() {
+                              selectedWing = _wingList[i]["_id"].toString();
+                              _getDirectoryListing(selectedWing);
+                            });
+                            setState(() {
+                              memberData = [];
+                              //filterMemberData = [];
+                              searchMemberData = [];
+                              isFilter = false;
+                              _isSearching = false;
+                            });
+                          }
+                        },
+                        child: Container(
+                          width:
+                          selectedWing == _wingList[i]["_id"].toString()
+                              ? 60
+                              : 45,
+                          height:
+                          selectedWing == _wingList[i]["_id"].toString()
+                              ? 60
+                              : 45,
+                          margin: EdgeInsets.only(top: 10, left: 5, right: 5),
+                          decoration: BoxDecoration(
+                              color: selectedWing ==
+                                  _wingList[i]["_id"].toString()
+                                  ? cnst.appPrimaryMaterialColor
+                                  : Colors.white,
+                              border: Border.all(
+                                  color: cnst.appPrimaryMaterialColor),
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(4))),
+                          alignment: Alignment.center,
+                          child: Text(
+                            "${_wingList[i]["wingName"]}",
+                            style: TextStyle(
+                                color: selectedWing ==
+                                    _wingList[i]["_id"].toString()
+                                    ? Colors.white
+                                    : cnst.appPrimaryMaterialColor,
+                                fontSize: 19),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+                isMemberLoading
+                    ? Container(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+                    : Expanded(
+                  child: memberData.length > 0 && memberData != null
+                      ? searchMemberData.length != 0
+                      ? AnimationLimiter(
+                    child: ListView.builder(
+                      padding: EdgeInsets.all(0),
+                      itemCount: memberData.length,
+                      itemBuilder:
+                          (BuildContext context, int index) {
+                        return MemberComponent(
+                            SocietyId: widget.SocietyId,
+                            MemberData: memberData[index],
+                            index: index);
+                      },
+                    ),
+                  )
+                      : _isSearching && isfirst
+                      ? AnimationLimiter(
+                    child: ListView.builder(
+                      padding: EdgeInsets.all(0),
+                      itemCount: searchMemberData.length,
+                      itemBuilder: (BuildContext context,
+                          int index) {
+                        return MemberComponent(
+                            SocietyId: widget.SocietyId,
+                            MemberData: memberData[index],
+                            index: index);
+                      },
+                    ),
+                  )
+                      : AnimationLimiter(
+                    child: ListView.builder(
+                      padding: EdgeInsets.all(0),
+                      itemCount: memberData.length,
+                      itemBuilder: (BuildContext context,
+                          int index) {
+                        return MemberComponent(
+                            SocietyId: widget.SocietyId,
+                            MemberData: memberData[index],
+                            index: index);
+                      },
+                    ),
+                  )
+                      : !dataFound
+                      ? Container(
+                    child: Center(),
+                  )
+                      : Center(
+                    child: Text('No Data Found'),
+                  ),
+                ),
 
-                Expanded(
+
+                /*Expanded(
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     child: ListView.builder(
@@ -279,7 +472,7 @@ class _DirectoryScreenState extends State<DirectoryScreen> {
                       },
                     ),
                   ),
-                ),
+                ),*/
 
                 // isMemberLoading
                 //     ? Container(
@@ -359,6 +552,9 @@ class _DirectoryScreenState extends State<DirectoryScreen> {
                 //         ),
                 //       ),
               ],
+            ):
+            Center(
+              child: CircularProgressIndicator(),
             ),
     );
   }
@@ -373,8 +569,7 @@ class _DirectoryScreenState extends State<DirectoryScreen> {
             end: Alignment.bottomCenter,
             colors: <Color>[
               Colors.deepPurple[900],
-              // appPrimaryMaterialColor[900],
-              appPrimaryMaterialColor[700],
+              cnst.appPrimaryMaterialColor[700],
             ],
           ),
         ),
@@ -421,7 +616,7 @@ class _DirectoryScreenState extends State<DirectoryScreen> {
         Icons.search,
         color: Colors.white,
       );
-      this.appBarTitle = new Text('Member Directory');
+      this.appBarTitle = Text('Member Directory');
       _isSearching = false;
       isfirst = false;
       searchMemberData.clear();

@@ -7,9 +7,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my_jini_adminapp/Common/ExtensionMethods.dart';
 
 class MemberProfile extends StatefulWidget {
-  var MemberData;
+  var memberData;
+  Function onAdminUpdate;
+  String isContactNumberPrivate,wingName;
 
-  MemberProfile({this.MemberData});
+  MemberProfile({this.memberData, this.isContactNumberPrivate, this.onAdminUpdate,this.wingName});
 
   @override
   _MemberProfileState createState() => _MemberProfileState();
@@ -49,17 +51,17 @@ class _MemberProfileState extends State<MemberProfile> {
   @override
   void initState() {
     // GetMyvehicleData();
-    // _getLocaldata();
-    // GetFamilyDetail();
+     //_getLocaldata();
+    //GetFamilyDetail();
     // _getLocaldata1();
   }
 
   _getLocaldata() async {
-    print(widget.MemberData["Id"].toString());
+    print(widget.memberData["Id"].toString());
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    SocietyId = widget.MemberData["SocietyId"].toString();
+    SocietyId = widget.memberData["SocietyId"].toString();
     setState(() {
-      MemberId = widget.MemberData["Id"].toString();
+      MemberId = widget.memberData["Id"].toString();
     });
   }
 
@@ -70,7 +72,6 @@ class _MemberProfileState extends State<MemberProfile> {
         setState(() {
           isLoading = true;
         });
-
         Services.GetVehicleData(MemberId).then((data) async {
           setState(() {
             isLoading = false;
@@ -123,18 +124,18 @@ class _MemberProfileState extends State<MemberProfile> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     setState(() {
-      SocietyIdF = widget.MemberData["SocietyId"].toString();
-      MemberIdF = widget.MemberData["Id"].toString();
+      SocietyIdF = widget.memberData["SocietyId"].toString();
+      MemberIdF = widget.memberData["Id"].toString();
     });
 
-    if (widget.MemberData["ParentId"].toString() == "null" ||
-        widget.MemberData["ParentId"].toString() == "")
+    if (widget.memberData["ParentId"].toString() == "null" ||
+        widget.memberData["ParentId"].toString() == "")
       setState(() {
         ParentIdF = "0";
       });
     else
       setState(() {
-        ParentIdF = widget.MemberData["ParentId"].toString();
+        ParentIdF = widget.memberData["ParentId"].toString();
       });
   }
 
@@ -352,7 +353,7 @@ class _MemberProfileState extends State<MemberProfile> {
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 //  child: Text('${widget.MemberData["Name"]}',
-                child: Text('Rinki Sharma',
+                child: Text("${widget.memberData["Name"]}",
                     style: TextStyle(
                       color: Colors.grey[800],
                       fontWeight: FontWeight.w600,
@@ -362,7 +363,7 @@ class _MemberProfileState extends State<MemberProfile> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 7.0),
                 //  child: Text("Wing-" + '${widget.MemberData["Wing"]}',
-                child: Text("Wing-" + 'A',
+                child: Text("Wing-" + '${widget.memberData["Wing"]}',
                     style: TextStyle(
                       color: Colors.grey[600],
                       fontWeight: FontWeight.w400,
@@ -378,7 +379,7 @@ class _MemberProfileState extends State<MemberProfile> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         //  Text('${widget.MemberData["ResidenceType"]}',
-                        Text('Rented',
+                        Text('${widget.memberData["ResidenceType"]}',
                             style: TextStyle(
                               color: Colors.grey[800],
                               fontWeight: FontWeight.w600,
@@ -408,7 +409,7 @@ class _MemberProfileState extends State<MemberProfile> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         // Text('${widget.MemberData["FlatNo"]}',
-                        Text('12',
+                        Text('${widget.memberData["FlatData"]["flatNo"]}',
                             style: TextStyle(
                               color: Colors.grey[800],
                               fontWeight: FontWeight.w600,
@@ -440,7 +441,7 @@ class _MemberProfileState extends State<MemberProfile> {
                 //     ? Text('${widget.MemberData["ContactNo"]}')
                 //     : Text("******" +
                 //         '${widget.MemberData["ContactNo"]}'.substring(6, 10)),
-                title: Text("998754221"),
+                title: Text("${widget.memberData["ContactNo"]}"),
                 subtitle: Text("Mobile No"),
               ),
               Padding(
@@ -457,7 +458,7 @@ class _MemberProfileState extends State<MemberProfile> {
                 subtitle: Text("Business / Job"),
                 title:
                     //  Text('${widget.MemberData["Designation"]}'.checkForNull()),
-                    Text('Raghuvir symphony'.checkForNull()),
+                    Text('${widget.memberData["Designation"]}'.checkForNull()),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 30.0),
@@ -472,7 +473,7 @@ class _MemberProfileState extends State<MemberProfile> {
                     Icon(Icons.description, color: Colors.grey[500], size: 22),
                 subtitle: Text("Business / Job Description"),
                 //title: Text('${widget.MemberData["BusinessDescription"]}'
-                title: Text('App and web development'.checkForNull()),
+                title: Text('${widget.memberData["BusinessDescription"]}'.checkForNull()),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 30.0),
@@ -490,7 +491,7 @@ class _MemberProfileState extends State<MemberProfile> {
                 ),
                 title:
                     // Text('${widget.MemberData["CompanyName"]}'.checkForNull()),
-                    Text('ITFuturz'.checkForNull()),
+                    Text('${widget.memberData["CompanyName"]}'.checkForNull()),
                 subtitle: Text("Company Name"),
               ),
               Padding(
@@ -506,7 +507,7 @@ class _MemberProfileState extends State<MemberProfile> {
                     width: 22, height: 22, color: Colors.grey[500]),
                 title:
                     //   Text('${widget.MemberData["BloodGroup"]}'.checkForNull()),
-                    Text('B+'.checkForNull()),
+                    Text('${widget.memberData["BloodGroup"]}'.checkForNull()),
                 subtitle: Text("Blood Group"),
               ),
               Padding(
@@ -523,8 +524,7 @@ class _MemberProfileState extends State<MemberProfile> {
                     width: 22,
                     height: 22,
                     color: Colors.grey[500]),
-                // title: Text('${widget.MemberData["Gender"]}'.checkForNull()),
-                title: Text('Female'.checkForNull()),
+                title: Text('${widget.memberData["Gender"]}'.checkForNull()),
                 subtitle: Text("Gender"),
               ),
               Padding(
@@ -539,7 +539,7 @@ class _MemberProfileState extends State<MemberProfile> {
                 leading:
                     Icon(Icons.location_on, size: 22, color: Colors.grey[500]),
                 //title: Text('${widget.MemberData["Address"]}'.checkForNull()),
-                title: Text('112,abc soc, near Althan'.checkForNull()),
+                title: Text('${widget.memberData["Address"]}'.checkForNull()),
                 subtitle: Text("Address"),
               ),
               Padding(
@@ -554,11 +554,11 @@ class _MemberProfileState extends State<MemberProfile> {
                 // leading: Image.asset('images/Cake.png',
                 //     width: 22, height: 22, color: Colors.grey[500]),
                 leading: Icon(Icons.cake),
-                // title: Text('${widget.MemberData["DOB"]}' != "null" &&
-                //         '${widget.MemberData["DOB"]}' != null
-                //     ? "${setDate(widget.MemberData["DOB"])}"
-                //     : ""),
-                title: Text("13-09-2000"),
+                 title: Text('${widget.memberData["DOB"]}' != "null" &&
+                         '${widget.memberData["DOB"]}' != null
+                     ? "${(widget.memberData["DOB"])}"
+                     : ""),
+                //title: Text("13-09-2000"),
                 subtitle: Text("DOB"),
               ),
               Padding(

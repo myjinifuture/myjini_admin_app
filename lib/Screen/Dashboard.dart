@@ -1,11 +1,12 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:lottie/lottie.dart';
 import 'package:my_jini_adminapp/Common/Constant.dart';
 import 'package:my_jini_adminapp/Common/Services.dart';
 import 'package:my_jini_adminapp/Component/DashboardComponent.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -15,8 +16,8 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   TextEditingController _txtsearch = new TextEditingController();
   bool isLoading = false;
-  int Count=0;
-  List societyList=[];
+  int Count = 0;
+  List societyList = [];
 
   _getSocietyList() async {
     try {
@@ -30,15 +31,17 @@ class _DashboardState extends State<Dashboard> {
           "IsVerify": "true",
         };
         Services.responseHandler(
-            apiName: "masterAdmin/getSocietyList", body: body)
+                apiName: "masterAdmin/getSocietyList", body: body)
             .then((responseData) {
           if (responseData.Data.length > 0) {
             print(responseData.Data);
             societyList = responseData.Data;
+            print("print Id +++++++++++++++++++++");
+            print(societyList);
+            print("print Id +++++++++++++++++++++End");
             setState(() {
               isLoading = false;
             });
-
           } else {
             print(responseData);
             setState(() {
@@ -83,6 +86,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         drawer: Drawer(),
         body: Stack(children: [
           // Background with gradient

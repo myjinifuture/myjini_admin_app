@@ -12,11 +12,13 @@ class Services {
   static Future<ResponseDataClass> responseHandler(
       {@required apiName, body}) async {
     String url = API_URL + "$apiName";
+    print(url);
     var header = Options(
       headers: {
         "authorization": "$Access_Token" // set content-length
       },
     );
+    print(header);
     var response;
     try {
       if (body == null) {
@@ -28,10 +30,13 @@ class Services {
         ResponseDataClass responseData = new ResponseDataClass(
             Message: "No Data", IsSuccess: false, Data: "");
         var data = response.data;
+        print(data);
+        print(response.data["Data"]);
+        print(response.data["Message"]);
+        print(response.data["IsSuccess"]);
         responseData.Message = data["Message"];
         responseData.IsSuccess = data["IsSuccess"];
         responseData.Data = data["Data"];
-
         return responseData;
       } else {
         print("error ->" + response.data.toString());
@@ -82,7 +87,6 @@ class Services {
           cityClassData cityclassdata =
               new cityClassData.fromJson(jsonResponse);
           list = cityclassdata.data;
-
           return list;
         }
       }
@@ -138,7 +142,7 @@ class Services {
         throw Exception(response.data.toString());
       }
     } catch (e) {
-      print("Error FamilyMemberData   : ${e.toString()}");
+      print("Error FamilyMemberData : ${e.toString()}");
       throw Exception(e.toString());
     }
   }

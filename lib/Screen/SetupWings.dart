@@ -217,7 +217,7 @@ class _SetupWingsState extends State<SetupWings> {
                   //itemCount: int.parse(widget.wingData),
                   itemCount: int.parse(widget.wingData),
                   staggeredTileBuilder: (_) => StaggeredTile.fit(2),
-                  itemBuilder: (BuildContext context, int index) {
+                  itemBuilder: (BuildContext context,int index) {
                     return GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(

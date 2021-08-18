@@ -14,6 +14,7 @@ import 'package:my_jini_adminapp/Screen/RegistrationScreen.dart';
 import 'package:my_jini_adminapp/Screen/Splashscreen.dart';
 
 import 'Screen/SetupWings.dart';
+import 'Screen/societyDownload.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,7 +44,6 @@ class _MyAppState extends State<MyApp> {
         '/MySociety': (context) => MySociety(),
         '/SetupWings': (context) => SetupWings(),
         '/CreateSociety': (context) => CreateSociety(),
-        '/DirectoryScreen': (context) => DirectoryScreen(),
         '/RegistrationScreen': (context) => RegistrationScreen(),
       },
       theme: ThemeData(
