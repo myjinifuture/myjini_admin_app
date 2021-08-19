@@ -135,7 +135,7 @@ class _PreviewScreenState extends State<PreviewScreen> {
       "screen": "getAmenitiesScreen"
     },
       {
-      "image": "assets/Download.png",
+      "image": "assets/download.png",
       "count": "0",
       "title": "Society Download",
       "screen": "societyDownload"
@@ -238,6 +238,11 @@ class _PreviewScreenState extends State<PreviewScreen> {
           });
         }
       }
+      if (_AdminMenuList[i]["title"] == "Society Download")
+        setState(() {
+          _AdminMenuList[i]["count"] = data["install"].toString();
+        });
+
       if (_AdminMenuList[i]["title"] == "Balance Sheet")
         setState(() {
           _AdminMenuList[i]["count"] =

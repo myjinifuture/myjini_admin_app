@@ -322,118 +322,120 @@ class _societyDownloadState extends State<societyDownload> {
                                     tileMode: TileMode.clamp),
                               ),
                             ),
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.center,
-                                  children: [
-                                    Padding(
-                                      padding:
-                                      EdgeInsets.only(left: 75),
-                                    ),
-                                    Text(
-                                      widget.societyName,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w300,
+                            SingleChildScrollView(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.center,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                        EdgeInsets.only(left: 75),
                                       ),
-                                    ),
-                                    Padding(
-                                      padding:
-                                      EdgeInsets.only(left: 55),
-                                    ),
-                                    InkWell(
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Icon(
-                                          Icons.close,
+                                      Text(
+                                        widget.societyName,
+                                        style: TextStyle(
                                           color: Colors.white,
-                                        ))
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  "Flat No : " +
-                                      getinstallList[index]["flatNo"],
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w300,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding:
+                                        EdgeInsets.only(left: 55),
+                                      ),
+                                      InkWell(
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Icon(
+                                            Icons.close,
+                                            color: Colors.white,
+                                          ))
+                                    ],
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                Container(
-                                  width: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width / 0.5,
-                                  child: ListView.builder(
-                                    shrinkWrap: true,
-                                    itemCount: getnameList.length,
-                                    itemBuilder:
-                                        (context, index) {
-                                      return Column(
-                                        crossAxisAlignment: CrossAxisAlignment
-                                            .start,
-                                        children: [
-                                          Padding(padding: EdgeInsets.only(
-                                            top: 5.0,)),
-                                          Row(
-                                            crossAxisAlignment: CrossAxisAlignment
-                                                .start,
-                                            children: [
-                                              Padding(padding: EdgeInsets.only(
-                                                left: 15.0,)),
-                                              Container(
-                                                width: MediaQuery
-                                                    .of(context)
-                                                    .size
-                                                    .width / 4.5,
-                                                child: Text(
-                                                  getnameList[index][
-                                                  "memberName"],
-                                                  style: TextStyle(
-                                                      fontFamily: "OpenSans"),
-                                                ),
-                                              ),
-                                              Container(child: Text(" : ")),
-                                              Padding(padding: EdgeInsets.only(left:10.0)),
-                                              Container(
-                                                width: MediaQuery
-                                                    .of(context)
-                                                    .size
-                                                    .width / 3.4,
-                                                child: Text(
-                                                  getnameList[index]["memberContact"],
-                                                  style: TextStyle(
-                                                      fontFamily: "OpenSans"),
-                                                ),
-                                              ),
-                                              getnameList[index]["isApp"] ==
-                                                  true
-                                                  ? getnameList[0]["memberToken"][0]["DeviceType"] ==
-                                                  "Android" ? Icon(Icons.android,color: Colors.green,) : Icon(Icons.phone_iphone,color: Colors.green,) : Icon(Icons.ad_units_outlined, color: Colors.red,) ,
-                                            ],
-                                          ),
-                                        ],
-                                      );
-                                    },
+                                  SizedBox(
+                                    height: 10,
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                              ],
+                                  Text(
+                                    "Flat No : " +
+                                        getinstallList[index]["flatNo"],
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Container(
+                                    width: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width / 0.5,
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: getnameList.length,
+                                      itemBuilder:
+                                          (context, index) {
+                                        return Column(
+                                          crossAxisAlignment: CrossAxisAlignment
+                                              .start,
+                                          children: [
+                                            Padding(padding: EdgeInsets.only(
+                                              top: 5.0,)),
+                                            Row(
+                                              crossAxisAlignment: CrossAxisAlignment
+                                                  .start,
+                                              children: [
+                                                Padding(padding: EdgeInsets.only(
+                                                  left: 15.0,)),
+                                                Container(
+                                                  width: MediaQuery
+                                                      .of(context)
+                                                      .size
+                                                      .width / 4.5,
+                                                  child: Text(
+                                                    getnameList[index][
+                                                    "memberName"],
+                                                    style: TextStyle(
+                                                        fontFamily: "OpenSans"),
+                                                  ),
+                                                ),
+                                                Container(child: Text(" : ")),
+                                                Padding(padding: EdgeInsets.only(left:10.0)),
+                                                Container(
+                                                  width: MediaQuery
+                                                      .of(context)
+                                                      .size
+                                                      .width / 3.4,
+                                                  child: Text(
+                                                    getnameList[index]["memberContact"],
+                                                    style: TextStyle(
+                                                        fontFamily: "OpenSans"),
+                                                  ),
+                                                ),
+                                                getnameList[index]["isApp"] ==
+                                                    true
+                                                    ? getnameList[index]["memberToken"][0]["DeviceType"] ==
+                                                    "Android" ? Icon(Icons.android,color: Colors.green,) : Icon(Icons.phone_iphone,color: Colors.green,) : Icon(Icons.ad_units_outlined, color: Colors.red,) ,
+                                              ],
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
